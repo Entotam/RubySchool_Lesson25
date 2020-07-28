@@ -21,9 +21,9 @@
   	<div class="form-group">
     <label for="exampleFormControlSelect1">Example select</label>
     <select name="barber_choise" class="form-control" id="exampleFormControlSelect1">
-      <option>Walter White</option>
-      <option>Jessie Pinkman</option>
-      <option>Gus Fring</option>
+      <option <%= @barber_choise == 'Walter White' ? 'selected' : '' %> >Walter White</option>
+      <option  <%= @barber_choise == 'Jessie Pinkman' ? 'selected' : '' %> >Jessie Pinkman</option>
+      <option <%= @barber_choise == 'Gus Fring' ? 'selected' : '' %> >Gus Fring</option>
     </select>
     </div>
     
