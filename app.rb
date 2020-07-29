@@ -4,14 +4,22 @@ require 'sinatra/reloader'
 require 'pony'
 require 'sqlite3'
 
+def get_db
+	return SQLite3::Database.new 'barbershop.db'
+end
+
 configure do
-	@db = SQLite3::Database.new 'barbershop.db'
-	@db.execute 'CREATE TABLE "Contacts" (
+	db = get_db
+	db.execute 'CREATE TABLE IF NOT EXISTS "Users" (
 	"id"	INTEGER,
-	"Email"	TEXT,
-	"Message"	TEXT,
+	"Name"	TEXT,
+	"Phone"	TEXT,
+	"DateStamp"	TEXT,
+	"Barber"	TEXT,
+	"Color"	TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
 )'
+#	db.close
 end
 
 get '/' do
@@ -98,18 +106,32 @@ post '/login/form' do
 end
 
 def is_hh_empty? hh
-		@error = hh.select { |key, _| params[key] == '' }.values.join(", ")
+	@error = hh.select { |key, _| params[key] == '' }.values.join(", ")
 
-		if @error != ''
-			erb :visit
-		else
-		file_visit = File.open("./public/users.txt", "a")
-		file_visit.write "User name - #{@username}, телефон для связи - #{@phone}, запись на дату: #{@date}, выбор цветоа волос - #{@color}, барбер - #{@barber_choise} \n"
-		file_visit.close
+	if @error != ''
+		erb :visit
+	else
+		add_to_db(@db, 'Users')
+	#file_visit = File.open("./public/users.txt", "a")
+	#file_visit.write "User name - #{@username}, телефон для связи - #{@phone}, запись на дату: #{@date}, выбор цветоа волос - #{@color}, барбер - #{@barber_choise} \n"
+	#ile_visit.close
+
+	#функция
 
 		@message_title = "Вы записаны на дату #{@date}"
 		@message_p = "Для уточнения времени посещения с вами свяжется выбранный барбер по указаному телефону"
 
 		erb :visit
 	end
+end
+
+def add_to_db(db, tableName)
+	db = get_db
+	db.execute "insert into #{tableName} (
+		Name,
+		Phone,
+		DateStamp,
+		Barber,
+		Color
+	) values (?, ?, ?, ?, ?)", [@username, @phone, @date, @barber_choise, @color]	
 end
