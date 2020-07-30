@@ -18,15 +18,18 @@
     	<input name="date" type="text" class="form-control" id="datetimepicker" value="<%= @date %>">
   	</div>
 
+    
   	<div class="form-group">
     <label for="exampleFormControlSelect1">Example select</label>
     <select name="barber_choise" class="form-control" id="exampleFormControlSelect1">
-      <option <%= @barber_choise == 'Walter White' ? 'selected' : '' %> >Walter White</option>
-      <option  <%= @barber_choise == 'Jessie Pinkman' ? 'selected' : '' %> >Jessie Pinkman</option>
-      <option <%= @barber_choise == 'Gus Fring' ? 'selected' : '' %> >Gus Fring</option>
+        <% @show_barb.each do |barber| %>
+        <option <%= @barber_choise == barber['Name'] ? 'selected' : '' %> >
+        <%= barber['Name'] %>
+        </option>
+        <% end %>
     </select>
     </div>
-    
+
   <div class="form-group">
     <label for="color">В какой цвет будет окраска волос?</label>
     <br>

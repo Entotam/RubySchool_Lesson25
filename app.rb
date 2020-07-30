@@ -53,6 +53,9 @@ get '/about' do
 end
 
 get '/visit' do
+	db = get_db
+	@show_barb = db.execute 'SELECT * FROM Barbers'
+
 	erb :visit
 end
 
