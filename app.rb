@@ -5,7 +5,9 @@ require 'pony'
 require 'sqlite3'
 
 def get_db
-	return SQLite3::Database.new 'barbershop.db'
+	db = SQLite3::Database.new 'barbershop.db'
+	db.results_as_hash = true
+	return db
 end
 
 configure do
@@ -96,6 +98,7 @@ post '/login/form' do
 	@login_pass = params[:login_pass]
 
 	if @login == "admin" && @login_pass == "123qwe123"
+		@admin == true
 		erb :secret
 	else 
 		@message_title = "Error"
@@ -104,6 +107,13 @@ post '/login/form' do
 		erb :login
 	end
 end
+
+get '/showusers' do
+
+	erb :showusers
+end
+#===============================================
+#Functions
 
 def is_hh_empty? hh
 	@error = hh.select { |key, _| params[key] == '' }.values.join(", ")
