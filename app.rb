@@ -109,6 +109,8 @@ post '/login/form' do
 end
 
 get '/showusers' do
+	db = get_db
+	@show_db = db.execute 'SELECT * FROM Users ORDER BY id DESC'
 
 	erb :showusers
 end

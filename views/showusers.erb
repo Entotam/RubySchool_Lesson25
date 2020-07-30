@@ -10,13 +10,15 @@
 		<th>Color</th>
 	</thead>
 	<tbody>
+		<% @show_db.each do |row| %>
 		<tr>
-			<th></th>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<th><%= row['id'] %></th>
+			<td><%= row['Name'] %></td>
+			<td><%= row['Phone'] %></td>
+			<td><%= row['DateStamp'] %></td>
+			<td><%= row['Barber'] %></td>
+			<td><%= row['Color'] %></td>
 		</tr>
+		<% end %>
 	</tbody>
 </table>
