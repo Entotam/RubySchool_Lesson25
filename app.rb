@@ -22,6 +22,32 @@ def seed_dbase dbase, barbers
 	end
 end
 
+def is_hh_empty? hh
+	@error = hh.select { |key, _| params[key] == '' }.values.join(", ")
+
+	if @error != ''
+		erb :visit
+	else
+		add_to_db(@db, 'Users')
+
+		@message_title = "Вы записаны на дату #{@date}"
+		@message_p = "Для уточнения времени посещения с вами свяжется выбранный барбер по указаному телефону"
+
+		erb :visit
+	end
+end
+
+def add_to_db(db, tableName)
+	db = get_db
+	db.execute "insert into #{tableName} (
+		Name,
+		Phone,
+		DateStamp,
+		Barber,
+		Color
+	) values (?, ?, ?, ?, ?)", [@username, @phone, @date, @barber_choise, @color]	
+end
+
 configure do
 	db = get_db
 	db.execute 'CREATE TABLE IF NOT EXISTS "Users" (
@@ -60,6 +86,9 @@ get '/visit' do
 end
 
 post '/visit' do
+	db = get_db
+	@show_barb = db.execute 'SELECT * FROM Barbers'
+	
 	@username = params[:username]
 	@phone = params[:phone]
 	@date = params[:date]
@@ -136,37 +165,4 @@ get '/showusers' do
 	@show_db = db.execute 'SELECT * FROM Users ORDER BY id DESC'
 
 	erb :showusers
-end
-#===============================================
-#Functions
-
-def is_hh_empty? hh
-	@error = hh.select { |key, _| params[key] == '' }.values.join(", ")
-
-	if @error != ''
-		erb :visit
-	else
-		add_to_db(@db, 'Users')
-	#file_visit = File.open("./public/users.txt", "a")
-	#file_visit.write "User name - #{@username}, телефон для связи - #{@phone}, запись на дату: #{@date}, выбор цветоа волос - #{@color}, барбер - #{@barber_choise} \n"
-	#ile_visit.close
-
-	#функция
-
-		@message_title = "Вы записаны на дату #{@date}"
-		@message_p = "Для уточнения времени посещения с вами свяжется выбранный барбер по указаному телефону"
-
-		erb :visit
-	end
-end
-
-def add_to_db(db, tableName)
-	db = get_db
-	db.execute "insert into #{tableName} (
-		Name,
-		Phone,
-		DateStamp,
-		Barber,
-		Color
-	) values (?, ?, ?, ?, ?)", [@username, @phone, @date, @barber_choise, @color]	
 end
